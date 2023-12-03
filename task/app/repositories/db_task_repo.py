@@ -2,10 +2,9 @@ import traceback
 from uuid import UUID
 from sqlalchemy.orm import Session
 
-from app.database import get_db
-from app.models.task import Task
-from app.schemas.task import Task as DBTask
-
+from task.app.database import get_db
+from task.app.models.task import Task
+from task.app.schemas.task import Task as DBTask
 
 
 class TaskRepo:
@@ -14,19 +13,18 @@ class TaskRepo:
     def __init__(self) -> None:
         self.db = next(get_db())
 
-
     def _map_to_model(self, task: DBTask) -> Task:
         result = Task.from_orm(task)
-        if task.assignee_id is not None:
+        if task.assignee is not 0:
             result.assignee = self.assignee_repo.get_assignee_by_id(
-                task.assignee_id)
+                task.assignee)
 
         return result
 
     def _map_to_schema(self, task: Task) -> DBTask:
         data = dict(task)
         del data['assignee']
-        data['assignee_id'] = task.assignee.id if task.assignee is not None else None
+        data['assignee_id'] = task.assignee if task.assignee is not 0 else 0
         result = DBTask(**data)
 
         return result

@@ -1,8 +1,8 @@
 from sqlalchemy import Column, String, DateTime, Enum
 from sqlalchemy.dialects.postgresql import UUID
 
-from app.schemas.base_schema import Base
-from app.models.task import TaskStatuses  # Импортируем предполагаемую модель статусов задач
+from task.app.schemas.base_schema import Base
+from task.app.models.task import TaskStatuses  # Импортируем предполагаемую модель статусов задач
 
 
 class Task(Base):
@@ -13,4 +13,4 @@ class Task(Base):
     description = Column(String, nullable=False)
     due_date = Column(DateTime, nullable=False)
     status = Column(Enum(TaskStatuses), nullable=False)
-    assignee = Column(String, nullable=True)  # Предположим, что здесь будет имя назначенного исполнителя задачи
+    assignee_id = Column(int, nullable=True)  # Предположим, что здесь будет имя назначенного исполнителя задачи

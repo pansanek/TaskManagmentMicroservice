@@ -15,4 +15,4 @@ class Task(BaseModel):
     description: str
     due_date: datetime
     status: TaskStatuses
-    assignee: str  # здесь будет имя назначенного исполнителя задачи
+    assignee_id: int

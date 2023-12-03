@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from uuid import UUID
-from app.models.task import Task, TaskStatuses
+from task.app.models.task import Task, TaskStatuses
 
 tasks: list[Task] = [
     Task(
@@ -9,7 +9,7 @@ tasks: list[Task] = [
         description='Описание задания: Создать отчет по продажам',
         due_date=datetime.now() + timedelta(days=7),
         status=TaskStatuses.TODO,
-        assignee='Павел'
+        assignee_id=1
     ),
     Task(
         id=UUID('00000000-0000-0000-0000-000000000002'),
@@ -17,7 +17,7 @@ tasks: list[Task] = [
         description='Описание задания: Подготовить презентацию для клиента',
         due_date=datetime.now() + timedelta(days=5),
         status=TaskStatuses.TODO,
-        assignee='Макар'
+        assignee_id=2
     )
 ]
 

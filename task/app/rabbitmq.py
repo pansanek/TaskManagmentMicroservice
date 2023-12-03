@@ -4,9 +4,9 @@ from asyncio import AbstractEventLoop
 from aio_pika.abc import AbstractRobustConnection
 from aio_pika import connect_robust, IncomingMessage
 
-from app.settings import settings
-from app.services.task_service import TaskService  # Импортируем ваш сервис управления задачами
-from app.repositories.task_repo import TaskRepo  # Импортируем ваш репозиторий для задач
+from task.app.settings import settings
+from task.app.services.task_service import TaskService  # Импортируем ваш сервис управления задачами
+from task.app.repositories.task_repo import TaskRepo  # Импортируем ваш репозиторий для задач
 
 async def process_created_task(msg: IncomingMessage):
     try:
@@ -27,7 +27,7 @@ async def process_started_task(msg: IncomingMessage):
     finally:
         await msg.ack()
 
-async def consume(loop: AbstractEventLoop) -> AbstractRobustConnection:
+async def consume_tasks(loop: AbstractEventLoop) -> AbstractRobustConnection:
     connection = await connect_robust(settings.amqp_url, loop=loop)
     channel = await connection.channel()
 
@@ -39,3 +39,4 @@ async def consume(loop: AbstractEventLoop) -> AbstractRobustConnection:
     print('Started RabbitMQ consuming for Task Management...')
 
     return connection
+

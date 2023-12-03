@@ -3,17 +3,18 @@ from uuid import UUID
 from datetime import datetime
 from typing import List
 
-from app.models.task import Task, TaskStatuses
-from app.repositories.task_repo import TaskRepo
+from task.app.models.task import Task, TaskStatuses
+from assignee.app.repositories.assignee_repo import AssigneeRepo
+from task.app.repositories.task_repo import TaskRepo
 
 
 class TaskService:
     task_repo: TaskRepo
-    #assignee_repo: AssigneeRepo
+    assignee_repo: AssigneeRepo
 
     def __init__(self, task_repo: TaskRepo = Depends(TaskRepo)) -> None:
         self.task_repo = task_repo
-        #self.assignee_repo = AssigneeRepo()
+        self.assignee_repo = AssigneeRepo()
 
     def get_tasks(self) -> List[Task]:
         return self.task_repo.get_tasks()
@@ -45,3 +46,7 @@ class TaskService:
 
         task.status = TaskStatuses.CANCELED
         return self.task_repo.set_status(task)
+
+    def get_assignee_task_count(self, assignee_id: UUID) -> int:
+        tasks = self.get_tasks()
+        return sum(1 for task in tasks if task.assignee_id == assignee_id)

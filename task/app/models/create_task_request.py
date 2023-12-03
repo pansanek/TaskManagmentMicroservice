@@ -5,4 +5,4 @@ class CreateTaskRequest(BaseModel):
     title: str
     description: str
     due_date: datetime
-    assignee: str
+    assignee_id: int
