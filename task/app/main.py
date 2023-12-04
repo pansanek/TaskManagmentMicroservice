@@ -2,8 +2,8 @@ import asyncio
 
 from fastapi import FastAPI
 
-from task.app import rabbitmq
-from task.app.endpoints.task_router import task_router
+from app import rabbitmq
+from app.endpoints.task_router import task_router
 
 app = FastAPI(title='Task Service')
 

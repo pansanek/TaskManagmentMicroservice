@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from assignee.app.models.assignee import Assignee
+from app.models.assignee import Assignee
 
 assignees: list[Assignee] = [
         Assignee(id=UUID('00000000-0000-0000-0000-000000000001'), name='Павел', taskcount = 1),

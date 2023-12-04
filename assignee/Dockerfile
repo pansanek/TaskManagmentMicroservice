@@ -1,20 +1,14 @@
-# Используем базовый образ Python 3.10
 FROM python:3.10
 
-# Выбор рабочей директории
 WORKDIR /app
 
-# Копируем файл зависимостей
-COPY ./AssigneeMicroservice/requirements.txt /app/
+COPY ./requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Устанавливаем зависимости
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+COPY ./app /app
+COPY ./migration /app/migration
+COPY ./alembic.ini /app/
 
-# Копируем код приложения
-COPY ./AssigneeMicroservice /app
+EXPOSE 80
 
-# Определяем порт
-EXPOSE 8000
-
-# Команда для запуска приложения
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "alembic upgrade head && uvicorn assignee.app.main:app --host 0.0.0.0 --port 80"]

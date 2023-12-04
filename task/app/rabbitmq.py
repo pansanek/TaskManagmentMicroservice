@@ -4,9 +4,9 @@ from asyncio import AbstractEventLoop
 from aio_pika.abc import AbstractRobustConnection
 from aio_pika import connect_robust, IncomingMessage, Message
 
-from task.app.settings import settings
-from task.app.services.task_service import TaskService  # Импортируем ваш сервис управления задачами
-from task.app.repositories.task_repo import TaskRepo  # Импортируем ваш репозиторий для задач
+from app.settings import settings
+from app.services.task_service import TaskService  # Импортируем ваш сервис управления задачами
+from app.repositories.task_repo import TaskRepo  # Импортируем ваш репозиторий для задач
 
 async def process_created_task(msg: IncomingMessage):
     try:

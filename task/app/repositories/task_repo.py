@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from uuid import UUID
-from task.app.models.task import Task, TaskStatuses
+from app.models.task import Task, TaskStatuses
 
 tasks: list[Task] = [
     Task(

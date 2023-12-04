@@ -2,9 +2,9 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from task.app.models.create_task_request import CreateTaskRequest
-from task.app.services.task_service import TaskService
-from task.app.models.task import Task
+from app.models.create_task_request import CreateTaskRequest
+from app.services.task_service import TaskService
+from app.models.task import Task
 
 task_router = APIRouter(prefix='/tasks', tags=['Tasks'])
 

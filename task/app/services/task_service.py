@@ -3,18 +3,16 @@ from uuid import UUID
 from datetime import datetime
 from typing import List
 
-from task.app.models.task import Task, TaskStatuses
-from assignee.app.repositories.assignee_repo import AssigneeRepo
-from task.app.repositories.task_repo import TaskRepo
+from app.models.task import Task, TaskStatuses
+from app.repositories.task_repo import TaskRepo
 
 
 class TaskService:
     task_repo: TaskRepo
-    assignee_repo: AssigneeRepo
 
     def __init__(self, task_repo: TaskRepo = Depends(TaskRepo)) -> None:
         self.task_repo = task_repo
-        self.assignee_repo = AssigneeRepo()
+
 
     def get_tasks(self) -> List[Task]:
         return self.task_repo.get_tasks()

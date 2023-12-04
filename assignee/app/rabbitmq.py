@@ -4,9 +4,9 @@ from asyncio import AbstractEventLoop
 from aio_pika.abc import AbstractRobustConnection
 from aio_pika import connect_robust, IncomingMessage
 
-from assignee.app.repositories.assignee_repo import AssigneeRepo
-from assignee.app.services.assignee_service import AssigneeService
-from task.app.settings import settings
+from app.repositories.assignee_repo import AssigneeRepo
+from app.services.assignee_service import AssigneeService
+from app.settings import settings
 
 
 async def process_created_assignee(msg: IncomingMessage):

@@ -7,7 +7,7 @@ from alembic import context
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
-from assignee.app.schemas.base_schema import Base
+from schemas.base_schema import Base
 
 config = context.config
 
@@ -28,7 +28,7 @@ target_metadata = Base.metadata
 # ... etc.
 
 
-from assignee.app.settings import settings
+from settings import settings
 
 
 def run_migrations_offline() -> None:

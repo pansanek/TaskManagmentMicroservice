@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String
 from sqlalchemy.dialects.postgresql import UUID
-from task.app.schemas.base_schema import Base
+from assignee.app.schemas.base_schema import Base
 
 class Assignee(Base):
     __tablename__ = 'assignees'

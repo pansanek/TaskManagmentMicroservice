@@ -2,8 +2,8 @@ import asyncio
 
 from fastapi import FastAPI
 
-from assignee.app import rabbitmq
-from assignee.app.endpoints.assignee_router import assignee_router
+from app import rabbitmq
+from app.endpoints.assignee_router import assignee_router
 
 app = FastAPI(title='Assignee Service')
 

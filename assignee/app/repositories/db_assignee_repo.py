@@ -2,9 +2,9 @@ import traceback
 from uuid import UUID
 from sqlalchemy.orm import Session
 
-from task.app.database import get_db
-from task.app.models.assignee import Assignee
-from task.app.schemas.assignee import Assignee as DBAssignee
+from assignee.app.database import get_db
+from assignee.app.models.assignee import Assignee
+from assignee.app.schemas.assignee import Assignee as DBAssignee
 
 class AssigneeRepo:
     db: Session

@@ -2,9 +2,9 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from assignee.app.models.create_assignee_request import CreateAssigneeRequest
-from assignee.app.services.assignee_service import AssigneeService
-from assignee.app.models.assignee import Assignee
+from app.models.create_assignee_request import CreateAssigneeRequest
+from app.services.assignee_service import AssigneeService
+from app.models.assignee import Assignee
 
 assignee_router = APIRouter(prefix='/assignees', tags=['Assignees'])
 
