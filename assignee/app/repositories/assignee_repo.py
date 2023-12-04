@@ -27,3 +27,11 @@ class AssigneeRepo:
         new_assignee = Assignee(id=UUID(), name=name)
         assignees.append(new_assignee)
         return new_assignee
+
+    def update_assignee(self, assignee) -> Assignee:
+        for item in assignees:
+            if item.id == assignee.id:
+                item.taskcount = assignee.taskcount
+                return item
+
+        raise KeyError

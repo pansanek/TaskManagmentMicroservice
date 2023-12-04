@@ -19,3 +19,6 @@ class AssigneeService:
 
     def create_assignee(self, name: str) -> Assignee:
         return self.assignee_repo.create_assignee(name)
+
+    def update_assignee(self, assignee: Assignee) -> Assignee:
+        return self.assignee_repo.update_assignee(assignee)

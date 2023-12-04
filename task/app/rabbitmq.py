@@ -2,7 +2,7 @@ import json
 import traceback
 from asyncio import AbstractEventLoop
 from aio_pika.abc import AbstractRobustConnection
-from aio_pika import connect_robust, IncomingMessage
+from aio_pika import connect_robust, IncomingMessage, Message
 
 from task.app.settings import settings
 from task.app.services.task_service import TaskService  # Импортируем ваш сервис управления задачами
@@ -13,10 +13,22 @@ async def process_created_task(msg: IncomingMessage):
         data = json.loads(msg.body.decode())
         TaskService(TaskRepo()).create_task(
             data['title'], data['description'], data['due_date'], data['assignee'])
+        await send_assignee_update_message(data['assignee'])
     except:
         traceback.print_exc()
     finally:
         await msg.ack()
+
+async def send_assignee_update_message(assignee_id: int):
+    connection = await connect_robust(settings.amqp_url)
+    channel = await connection.channel()
+
+    message_body = json.dumps({'assignee_id': assignee_id})
+    await channel.default_exchange.publish(
+        Message(body=message_body.encode()),
+        routing_key='potemkin_assignee_update_queue'
+    )
+
 
 async def process_started_task(msg: IncomingMessage):
     try:

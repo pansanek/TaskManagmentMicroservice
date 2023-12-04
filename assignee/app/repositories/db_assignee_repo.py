@@ -44,3 +44,13 @@ class AssigneeRepo:
         except:
             traceback.print_exc()
             raise KeyError
+
+    def update_assignee(self, assignee: Assignee) -> Assignee:
+        try:
+            db_assignee = self.db.query(DBAssignee).filter(DBAssignee.id == assignee.id).first()
+            db_assignee.taskcount = assignee.taskcount
+            self.db.commit()
+            return assignee
+        except:
+            traceback.print_exc()
+            raise KeyError
