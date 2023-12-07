@@ -37,7 +37,7 @@ jobs:
 
       - name: Build docker image
         run: |
-          docker build ./assignee -f ./assignee/Dockerfile --tag cr.yandex/${{ secrets.YC_REGISTRY_ID }}/maprac6-assignee:latest
+          docker build ./task -f ./task/Dockerfile --tag cr.yandex/${{ secrets.YC_REGISTRY_ID }}/maprac6-task:latest
 
       - name: Login to YC Registry
         uses: docker/login-action@v3.0.0
@@ -48,6 +48,6 @@ jobs:
 
       - name: Push tag YC Registry
         run: |
-          docker push cr.yandex/${{ secrets.YC_REGISTRY_ID }}/maprac6-assignee:latest
+          docker push cr.yandex/${{ secrets.YC_REGISTRY_ID }}/maprac6-task:latest
 
 
