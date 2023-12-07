@@ -1,12 +1,12 @@
 FROM python:3.10
 
 # Выбор папки, в которой будет вестись работа
-WORKDIR /assignee
+WORKDIR /code
 
-COPY ./assignee/requirements.txt /assignee/
-RUN pip install --no-cache-dir -r /assignee/requirements.txt
+COPY ./requirements.txt /code/
+RUN pip install --no-cache-dir -r /code/requirements.txt
 
-COPY ./assignee/app /assignee/app
+COPY ./app /code/app
 
 
 EXPOSE 81
