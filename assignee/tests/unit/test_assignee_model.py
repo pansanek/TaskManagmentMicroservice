@@ -10,8 +10,8 @@ from app.services.assignee_service import AssigneeService
 def assignee_repo_with_data():
     repo = AssigneeRepo()
     repo.assignees = [
-        Assignee(id=1), name='Павел', taskcount=1),
-        Assignee(id=2), name='Макар', taskcount=2),
+        Assignee(id=1, name='Павел', taskcount=1),
+        Assignee(id=2, name='Макар', taskcount=2),
     ]
     return repo
 
