@@ -22,7 +22,7 @@ jobs:
         pytest ./assignee/tests/unit
     - name: Prepare e2e tests      
       run: |    
-        sudo docker build ./assignee  --file Dockerfile --tag back-tests
+        sudo docker build ./assignee  --file ./assignee/Dockerfile --tag back-tests
         sudo docker run -e POSTGRES_PASSWORD=potemkin -p 5432:5432 -d postgres:14        
         sleep 5
         alembic upgrade head        
