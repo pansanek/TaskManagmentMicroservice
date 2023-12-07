@@ -7,7 +7,7 @@ from datetime import datetime
 from app.models.assignee import Assignee
 
 time.sleep(5)
-base_url = 'http://localhost:8000/api/assignees/'
+base_url = 'http://localhost:81/api/assignees/'
 
 @pytest.fixture(scope='session')
 def first_assignee_data() -> dict:
