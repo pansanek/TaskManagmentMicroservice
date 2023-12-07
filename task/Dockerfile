@@ -4,7 +4,7 @@ FROM python:3.10
 WORKDIR /code
 
 COPY ./requirements.txt /code/
-RUN pip install --no-cache-dir -r /task/requirements.txt
+RUN pip install --no-cache-dir -r /code/requirements.txt
 
 COPY ./app /code/app
 COPY ./migration /code/migration
