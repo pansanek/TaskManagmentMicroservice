@@ -29,7 +29,7 @@ def test_get_assignees(assignee_service_with_repo):
 
 
 def test_get_assignee_by_id(assignee_service_with_repo):
-    assignee = assignee_service_with_repo.get_assignee_by_id(UUID('00000000-0000-0000-0000-000000000001'))
+    assignee = assignee_service_with_repo.get_assignee_by_id(1))
     assert assignee.name == 'Павел'
 
 
@@ -45,7 +45,7 @@ def test_create_assignee(assignee_service_with_repo):
 
 
 def test_update_assignee(assignee_service_with_repo):
-    updated_assignee = assignee_service_with_repo.update_assignee(id=UUID('00000000-0000-0000-0000-000000000001'))
+    updated_assignee = assignee_service_with_repo.update_assignee(id=1))
     assert updated_assignee.taskcount == 2
 
 
