@@ -1,14 +1,17 @@
 FROM python:3.10
 
-WORKDIR /app
+# Выбор папки, в которой будет вестись работа
+WORKDIR /assignee
 
-COPY ./requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
+COPY ./assignee/requirements.txt /assignee/
+RUN pip install --no-cache-dir -r /assignee/requirements.txt
 
-COPY ./app /app
-COPY ./migration /app/migration
-COPY ./alembic.ini /app/
+COPY ./assignee/app /assignee/app
+COPY ./assignee/migration /assignee/migration
+COPY ./assignee/alembic.ini /assignee/alembic.ini
 
-EXPOSE 80
+EXPOSE 81
 
-CMD ["sh", "-c", "alembic upgrade head && uvicorn assignee.app.main:app --host 0.0.0.0 --port 80"]
+CMD ["/bin/sh", "-c", \
+    "alembic upgrade head && \
+    uvicorn app.main:app --host 0.0.0.0 --port 80"]

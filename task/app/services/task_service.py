@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import List
 
 from app.models.task import Task, TaskStatuses
-from app.repositories.task_repo import TaskRepo
+from app.repositories.db_task_repo import TaskRepo
 
 
 class TaskService:
@@ -17,8 +17,8 @@ class TaskService:
     def get_tasks(self) -> List[Task]:
         return self.task_repo.get_tasks()
 
-    def create_task(self, title: str, description: str, due_date: datetime, assignee: str) -> Task:
-        task = Task(id=UUID(), title=title, description=description, due_date=due_date, status=TaskStatuses.TODO, assignee=assignee)
+    def create_task(self,task_id:UUID, title: str, description: str, due_date: datetime, assignee_id: int) -> Task:
+        task = Task(id=task_id, title=title, description=description, due_date=due_date, status=TaskStatuses.TODO, assignee_id=assignee_id)
         return self.task_repo.create_task(task)
 
     def start_task(self, id: UUID) -> Task:

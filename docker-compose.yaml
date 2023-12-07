@@ -1,13 +1,16 @@
 version: '3'
+
 services:
   postgres:
     image: postgres:latest
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Alex2002
       POSTGRES_DB: test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: potemkin
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   rabbitmq:
     image: "rabbitmq:management"
@@ -18,26 +21,24 @@ services:
       - "5672:5672"
       - "15672:15672"
 
-  assignee:
-    build:
-      context: ./assignee  # путь к каталогу, содержащему Dockerfile для assignee
-    depends_on:
-      - postgres
-      - rabbitmq
-    environment:
-      POSTGRES_URL: "postgresql://postgres:Alex2002@postgres:5432/test"
-      AMQP_URL: "amqp://guest:guest@rabbitmq:5672/"
-    ports:
-      - "8000:8000"
-
   task:
     build:
-      context: ./task  # путь к каталогу, содержащему Dockerfile для task
+      context: .
+      dockerfile: /task/Dockerfile
+    ports:
+      - "80:80"
     depends_on:
       - postgres
       - rabbitmq
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
     environment:
-      POSTGRES_URL: "postgresql://postgres:password@postgres:5432/test"
-      AMQP_URL: "amqp://guest:guest@rabbitmq:5672/"
+      PGADMIN_DEFAULT_EMAIL: pas@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "8001:8000"
+      - "5050:80"
+
+volumes:
+  postgres_data:

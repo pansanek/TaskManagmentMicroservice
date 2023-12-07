@@ -18,7 +18,7 @@ def create_task(
     task_service: TaskService = Depends(TaskService)
 ) -> Task:
     try:
-        task = task_service.create_task(task_info.title, task_info.description, task_info.due_date, task_info.assignee)
+        task = task_service.create_task(task_info.id,task_info.title, task_info.description, task_info.due_date, task_info.assignee_id)
         return task.dict()
     except KeyError:
         raise HTTPException(400, f'Task with title={task_info.title} already exists')
