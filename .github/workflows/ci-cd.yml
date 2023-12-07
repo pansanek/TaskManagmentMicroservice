@@ -15,11 +15,8 @@ jobs:
 
       - name: Build docker assignee image
         run: |
-          docker build ./assignee --file ./assignee/Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/assignee-service:latest
+          docker build ./assignee --file ./assignee/Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/assignee:latest
 
-      - name: Test solution
-        run: |
-          echo There will be tests later
 
       - name: Login to DockerHub
         uses: docker/login-action@v3.0.0
