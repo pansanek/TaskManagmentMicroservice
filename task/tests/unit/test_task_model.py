@@ -1,11 +1,11 @@
-# /tests/unit/test_task_model.py
+# /tests/unit/test_assignee_model.py
 
 import pytest
 from uuid import uuid4
 from datetime import datetime
 from pydantic import ValidationError
 
-from task.app.models.task import Task, TaskStatuses
+from app.models.task import Task, TaskStatuses
 
 
 @pytest.fixture()
