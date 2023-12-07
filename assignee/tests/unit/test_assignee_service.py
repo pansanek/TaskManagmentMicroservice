@@ -1,7 +1,6 @@
 import pytest
 from uuid import UUID
-from app.services.assignee_service import AssigneeService
-from app.repositories.assignee_repo import AssigneeRepo
+
 
 
 @pytest.fixture(scope='session')
