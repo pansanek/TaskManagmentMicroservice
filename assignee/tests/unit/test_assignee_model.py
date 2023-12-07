@@ -2,9 +2,9 @@ import pytest
 from uuid import UUID, uuid4
 from fastapi import HTTPException
 
-from tasks.app.models.assignee import Assignee
-from tasks.app.repositories.assignee_repo import AssigneeRepo
-from tasks.app.services.assignee_service import AssigneeService
+from models.assignee import Assignee
+from repositories.assignee_repo import AssigneeRepo
+from services.assignee_service import AssigneeService
 
 
 @pytest.fixture()
