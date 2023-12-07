@@ -28,7 +28,7 @@ jobs:
 
 
       - name: Build and push assignee service image
-          run: |
+        run: |
             docker push ${{ secrets.DOCKER_USERNAME }}/assignee-service:latest
 
 
