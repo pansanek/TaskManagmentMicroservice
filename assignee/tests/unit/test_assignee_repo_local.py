@@ -44,7 +44,7 @@ def test_get_assignee_by_id(assignee_repo):
 
 def test_get_assignee_by_id_error(assignee_repo):
     with pytest.raises(KeyError):
-        assignee_repo.get_assignee_by_id(UUID('some-invalid-uuid'))
+        assignee_repo.get_assignee_by_id(error)
 
 
 def test_update_assignee(assignee_repo):
