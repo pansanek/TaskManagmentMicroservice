@@ -2,10 +2,6 @@ import pytest
 from uuid import UUID, uuid4
 from fastapi import HTTPException
 
-from assignee import Assignee
-from assignee_repo import AssigneeRepo
-from assignee_service import AssigneeService
-
 
 @pytest.fixture()
 def assignee_repo_with_data():
