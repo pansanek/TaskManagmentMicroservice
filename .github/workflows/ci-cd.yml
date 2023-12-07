@@ -15,7 +15,7 @@ jobs:
 
       - name: Build docker assignee image
         run: |
-          docker build ./assignee -f ./assignee/Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/assignee-service:latest ./assignee
+          docker build ./assignee -f ./assignee/Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/assignee-service:latest
 
 
       - name: Login to DockerHub
