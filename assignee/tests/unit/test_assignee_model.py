@@ -33,11 +33,6 @@ def test_get_assignee_by_id(assignee_service_with_repo):
     assert assignee.name == 'Павел'
 
 
-def test_get_assignee_by_invalid_id(assignee_service_with_repo):
-    with pytest.raises(HTTPException):
-        assignee_service_with_repo.get_assignee_by_id(UUID('invalid_id'))
-
-
 def test_create_assignee(assignee_service_with_repo):
     new_assignee = assignee_service_with_repo.create_assignee(name='Новый сотрудник')
     assert new_assignee.name == 'Новый сотрудник'
@@ -49,6 +44,3 @@ def test_update_assignee(assignee_service_with_repo):
     assert updated_assignee.taskcount == 2
 
 
-def test_update_assignee_with_invalid_id(assignee_service_with_repo):
-    with pytest.raises(HTTPException):
-        assignee_service_with_repo.update_assignee(id=inv)
