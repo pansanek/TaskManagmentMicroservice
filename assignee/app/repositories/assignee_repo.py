@@ -3,8 +3,8 @@ from uuid import UUID
 from app.models.assignee import Assignee
 
 assignees: list[Assignee] = [
-        Assignee(id=UUID('00000000-0000-0000-0000-000000000001'), name='Павел', taskcount = 1),
-        Assignee(id=UUID('00000000-0000-0000-0000-000000000002'), name='Макар', taskcount = 1)
+        Assignee(id=1, name='Павел', taskcount = 1),
+        Assignee(id=2, name='Макар', taskcount = 1)
 ]
 
 class AssigneeRepo:
@@ -16,7 +16,7 @@ class AssigneeRepo:
     def get_assignees(self) -> list[Assignee]:
         return assignees
 
-    def get_assignee_by_id(self, id: UUID) -> Assignee:
+    def get_assignee_by_id(self, id: int) -> Assignee:
         for assignee in assignees:
             if assignee.id == id:
                 return assignee
@@ -28,7 +28,7 @@ class AssigneeRepo:
         assignees.append(new_assignee)
         return new_assignee
 
-    def update_assignee(self, id:UUID) -> Assignee:
+    def update_assignee(self, id:int) -> Assignee:
         for item in assignees:
             if item.id == id:
                 item.taskcount += 1

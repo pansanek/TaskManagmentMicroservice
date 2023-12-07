@@ -24,7 +24,7 @@ def create_assignee(
         raise HTTPException(400, f'Assignee with name={assignee_info.name} already exists')
 
 @assignee_router.get('/{id}')
-def get_assignee_by_id(id: UUID, assignee_service: AssigneeService = Depends(AssigneeService)) -> Assignee:
+def get_assignee_by_id(id: int, assignee_service: AssigneeService = Depends(AssigneeService)) -> Assignee:
     try:
         assignee = assignee_service.get_assignee_by_id(id)
         return assignee.dict()
@@ -33,7 +33,7 @@ def get_assignee_by_id(id: UUID, assignee_service: AssigneeService = Depends(Ass
 
 @assignee_router.put('/{id}')
 def update_assignee(
-    id: UUID,
+    id: int,
     assignee_service: AssigneeService = Depends(AssigneeService)
 ) -> Assignee:
     try:

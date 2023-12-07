@@ -5,6 +5,6 @@ from app.schemas.base_schema import Base
 class Assignee(Base):
     __tablename__ = 'assignees'
 
-    id = Column(UUID(as_uuid=True), primary_key=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     taskcount = Column(Integer,nullable=False)

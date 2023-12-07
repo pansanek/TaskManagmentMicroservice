@@ -4,6 +4,6 @@ from pydantic import BaseModel
 from uuid import UUID
 
 class Assignee(BaseModel):
-    id: UUID
+    id: int
     name: str
     taskcount: int

@@ -1,3 +1,4 @@
+import asyncio
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -7,6 +8,8 @@ from app.services.task_service import TaskService
 from app.models.task import Task
 
 from app.rabbitmq import process_created_task
+
+from app.rabbitmq import send_assignee_update_message
 
 task_router = APIRouter(prefix='/tasks', tags=['Tasks'])
 
@@ -21,6 +24,7 @@ def create_task(
 ) -> Task:
     try:
         task = task_service.create_task(task_info.id,task_info.title, task_info.description, task_info.due_date, task_info.assignee_id)
+        asyncio.run(send_assignee_update_message(task_info.assignee_id))
         return task.dict()
     except KeyError:
         raise HTTPException(400, f'Task with title={task_info.title} already exists')

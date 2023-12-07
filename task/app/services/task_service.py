@@ -6,8 +6,6 @@ from typing import List
 from app.models.task import Task, TaskStatuses
 from app.repositories.db_task_repo import TaskRepo
 
-
-
 class TaskService:
     task_repo: TaskRepo
 

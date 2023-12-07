@@ -16,9 +16,7 @@ async def process_assignee_update(msg: IncomingMessage):
         assignee_id = data['assignee_id']
 
         assignee_service = AssigneeService(AssigneeRepo())
-        assignee = assignee_service.get_assignee_by_id(assignee_id)
-        assignee.taskcount += 1
-        assignee_service.update_assignee(assignee)
+        assignee_service.update_assignee(assignee_id)
     except:
         traceback.print_exc()
     finally:
