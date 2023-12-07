@@ -4,7 +4,7 @@ from app.models.task import Task, TaskStatuses
 
 tasks: list[Task] = [
     Task(
-        id=UUID('00000000-0000-0000-0000-000000000001'),
+        id=UUID('00000000-0000-0000-0000-000000000011'),
         title='Создать отчет по продажам',
         description='Описание задания: Создать отчет по продажам',
         due_date=datetime.now() + timedelta(days=7),
