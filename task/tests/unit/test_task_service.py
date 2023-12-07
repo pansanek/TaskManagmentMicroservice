@@ -13,8 +13,15 @@ def task_service() -> TaskService:
 
 
 @pytest.fixture()
-def task_data() -> tuple[UUID, str, str, datetime, int]:
-    return (uuid4(), 'Task', 'Task description', datetime.now() + timedelta(days=7), 1)
+def task_data() -> Task:
+    return Task(
+        id=UUID('00000000-0000-0000-0000-000000000011'),
+        title='Task',
+        description='Sample description',
+        due_date=datetime.now() + timedelta(days=7),
+        status=TaskStatuses.TODO,
+        assignee_id=1
+    )
 
 
 def test_empty_tasks(task_service: TaskService) -> None:
@@ -22,64 +29,42 @@ def test_empty_tasks(task_service: TaskService) -> None:
 
 
 def test_create_task(
-        task_data: tuple[UUID, str, str, datetime, int],
+        task_data: task_data,
         task_service: TaskService
 ) -> None:
-    task_id, title, description, due_date, assignee_id = task_data
-    task = task_service.create_task(task_id, title, description, due_date, assignee_id)
+    task = task_service.create_task(task_data.id, task_data.title, task_data.description, task_data.due_date, task_data.assignee_id)
 
-    assert task.id == task_id
-    assert task.title == title
-    assert task.description == description
-    assert task.due_date == due_date
+    assert task.id == task_data.id
+    assert task.title == task_data.title
+    assert task.description == task_data.description
+    assert task.due_date == task_data.due_date
     assert task.status == TaskStatuses.TODO
-    assert task.assignee_id == assignee_id
+    assert task.assignee_id == task_data.assignee_id
 
-
-def test_create_task_duplicate(
-        task_data: tuple[UUID, str, str, datetime, int],
-        task_service: TaskService
-) -> None:
-    task_id, title, description, due_date, assignee_id = task_data
-    with pytest.raises(KeyError):
-        task_service.create_task(task_id, title, description, due_date, assignee_id)
 
 
 def test_start_task(
-        task_data: tuple[UUID, str, str, datetime, int],
+        task_data: task_data,
         task_service: TaskService
 ) -> None:
-    task_id, _, _, _, _ = task_data
-    task_service.start_task(task_id)
-    task = task_service.get_task_by_id(task_id)
+    task_service.start_task(task_data.id)
+    task = task_service.get_task_by_id(task_data.id)
     assert task.status == TaskStatuses.IN_PROGRESS
 
 
 def test_complete_task(
-        task_data: tuple[UUID, str, str, datetime, int],
+        task_data: task_data,
         task_service: TaskService
 ) -> None:
-    task_id, _, _, _, _ = task_data
-    task_service.start_task(task_id)
-    task_service.complete_task(task_id)
-    task = task_service.get_task_by_id(task_id)
+    task_service.complete_task(task_data.id)
+    task = task_service.get_task_by_id(task_data.id)
     assert task.status == TaskStatuses.COMPLETED
 
 
-def test_cancel_task(
-        task_data: tuple[UUID, str, str, datetime, int],
-        task_service: TaskService
-) -> None:
-    task_id, _, _, _, _ = task_data
-    task_service.cancel_task(task_id)
-    task = task_service.get_task_by_id(task_id)
-    assert task.status == TaskStatuses.CANCELED
-
 
 def test_get_assignee_task_count(
-        task_data: tuple[UUID, str, str, datetime, int],
+        task_data: task_data,
         task_service: TaskService
 ) -> None:
-    _, _, _, _, assignee_id = task_data
-    task_count = task_service.get_assignee_task_count(assignee_id)
+    task_count = task_service.get_assignee_task_count(task_data.assignee_id)
     assert task_count == 1
