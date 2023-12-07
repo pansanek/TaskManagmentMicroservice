@@ -45,10 +45,10 @@ def test_create_assignee(assignee_service_with_repo):
 
 
 def test_update_assignee(assignee_service_with_repo):
-    updated_assignee = assignee_service_with_repo.update_assignee(id=1))
+    updated_assignee = assignee_service_with_repo.update_assignee(id=1)
     assert updated_assignee.taskcount == 2
 
 
 def test_update_assignee_with_invalid_id(assignee_service_with_repo):
     with pytest.raises(HTTPException):
-        assignee_service_with_repo.update_assignee(id=UUID('invalid_id'))
+        assignee_service_with_repo.update_assignee(id=inv)
