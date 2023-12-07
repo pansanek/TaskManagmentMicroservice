@@ -2,9 +2,9 @@ name: CI/CD pipline
 
 on:
   push:
-    branches: ["master"]
+    branches: ["tests"]
   pull_request:
-    branches: ["master"]
+    branches: ["tests"]
 
 jobs:
   test:  
