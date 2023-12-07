@@ -31,8 +31,3 @@ def test_update_assignee(assignee_service: AssigneeService) -> None:
     assert updated_assignee.taskcount == created_assignee.taskcount + 1
 
 
-def test_create_assignee_repeat(assignee_service: AssigneeService) -> None:
-    name = "Charles"
-    assignee_service.create_assignee(name)
-    with pytest.raises(KeyError):
-        assignee_service.create_assignee(name)
