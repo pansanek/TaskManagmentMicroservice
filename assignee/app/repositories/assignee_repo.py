@@ -24,7 +24,7 @@ class AssigneeRepo:
         raise KeyError
 
     def create_assignee(self, name: str) -> Assignee:
-        new_assignee = Assignee(id=UUID(), name=name)
+        new_assignee = Assignee(id=len(assignees) + 1, name=name)
         assignees.append(new_assignee)
         return new_assignee
 
