@@ -16,7 +16,7 @@ base_url = 'http://127.0.0.1:8000/api/tasks/'
 @pytest.fixture(scope='session')
 def first_task_data() -> dict:
     return {
-        'title': 'Task 1',
+        'title': 'Task',
         'description': 'Description 1',
         'due_date': str(datetime.now()),
         'assignee_id': 1

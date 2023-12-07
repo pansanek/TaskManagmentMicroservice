@@ -12,7 +12,7 @@ from app.models.task import Task, TaskStatuses
 def any_task_data() -> dict:
     return {
         'id': uuid4(),
-        'title': 'Task Title',
+        'title': 'Title',
         'description': 'Task Description',
         'due_date': datetime.now(),
         'status': TaskStatuses.TODO,

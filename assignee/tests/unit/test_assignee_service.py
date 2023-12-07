@@ -32,7 +32,7 @@ def test_update_assignee(assignee_service: AssigneeService) -> None:
 
 
 def test_create_assignee_repeat(assignee_service: AssigneeService) -> None:
-    name = "Charlie"
+    name = "Charles"
     assignee_service.create_assignee(name)
     with pytest.raises(KeyError):
         assignee_service.create_assignee(name)

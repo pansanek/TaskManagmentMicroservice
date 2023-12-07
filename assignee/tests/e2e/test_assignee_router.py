@@ -11,7 +11,7 @@ client = TestClient(app)
 @pytest.fixture(scope='session')
 def assignee_data() -> dict:
     return {
-        'name': 'John Doe',
+        'name': 'Jon Doe',
     }
 
 

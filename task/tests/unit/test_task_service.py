@@ -14,7 +14,7 @@ def task_service() -> TaskService:
 
 @pytest.fixture()
 def task_data() -> tuple[UUID, str, str, datetime, int]:
-    return (uuid4(), 'Test Task', 'Task description', datetime.now() + timedelta(days=7), 1)
+    return (uuid4(), 'Task', 'Task description', datetime.now() + timedelta(days=7), 1)
 
 
 def test_empty_tasks(task_service: TaskService) -> None:

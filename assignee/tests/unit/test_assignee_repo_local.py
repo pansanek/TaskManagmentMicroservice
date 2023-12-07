@@ -28,7 +28,7 @@ def test_create_assignee(assignee_repo):
 
 
 def test_create_assignee_duplicate(assignee_repo):
-    assignee_repo.create_assignee(name='John Doe')
+    assignee_repo.create_assignee(name='Joh Doe')
 
     with pytest.raises(KeyError):
         assignee_repo.create_assignee(name='John Doe')

@@ -12,7 +12,7 @@ def task_repo() -> TaskRepo:
 def sample_task() -> Task:
     return Task(
         id=uuid4(),
-        title='Sample Task',
+        title='Task',
         description='Sample description',
         due_date=datetime.now() + timedelta(days=7),
         status=TaskStatuses.TODO,
