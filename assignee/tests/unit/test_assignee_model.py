@@ -34,8 +34,8 @@ def test_get_assignee_by_id(assignee_service_with_repo):
 
 
 def test_create_assignee(assignee_service_with_repo):
-    new_assignee = assignee_service_with_repo.create_assignee(name='Новый сотрудник')
-    assert new_assignee.name == 'Новый сотрудник'
+    new_assignee = assignee_service_with_repo.create_assignee(name='Исполнитель')
+    assert new_assignee.name == 'Исполнитель'
     assert new_assignee.taskcount == 0
 
 
