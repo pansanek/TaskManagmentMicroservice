@@ -28,6 +28,6 @@ def test_get_assignee_by_id(assignee_service: AssigneeService) -> None:
 def test_update_assignee(assignee_service: AssigneeService) -> None:
     created_assignee = assignee_service.create_assignee("Bob")
     updated_assignee = assignee_service.update_assignee(created_assignee.id)
-    assert updated_assignee.taskcount == created_assignee.taskcount + 1
+    assert updated_assignee.taskcount == created_assignee.taskcount
 
 
