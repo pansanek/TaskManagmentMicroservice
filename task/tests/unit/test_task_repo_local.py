@@ -1,8 +1,8 @@
 import pytest
 from uuid import UUID, uuid4
 from datetime import datetime, timedelta
-from task.app.models.task import Task, TaskStatuses
-from task.app.repositories.task_repo import TaskRepo
+from app.models.task import Task, TaskStatuses
+from app.repositories.task_repo import TaskRepo
 
 @pytest.fixture(scope='session')
 def task_repo() -> TaskRepo:
