@@ -34,11 +34,10 @@ def get_assignee_by_id(id: UUID, assignee_service: AssigneeService = Depends(Ass
 @assignee_router.put('/{id}')
 def update_assignee(
     id: UUID,
-    assignee_info: CreateAssigneeRequest,
     assignee_service: AssigneeService = Depends(AssigneeService)
 ) -> Assignee:
     try:
-        assignee = assignee_service.update_assignee(id, assignee_info.name)
+        assignee = assignee_service.update_assignee(id)
         return assignee.dict()
     except KeyError:
         raise HTTPException(404, f'Assignee with id={id} not found')

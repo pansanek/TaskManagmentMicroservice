@@ -6,6 +6,8 @@ from app.models.create_task_request import CreateTaskRequest
 from app.services.task_service import TaskService
 from app.models.task import Task
 
+from app.rabbitmq import process_created_task
+
 task_router = APIRouter(prefix='/tasks', tags=['Tasks'])
 
 @task_router.get('/')
