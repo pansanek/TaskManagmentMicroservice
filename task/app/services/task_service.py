@@ -47,3 +47,6 @@ class TaskService:
     def get_assignee_task_count(self, assignee_id: UUID) -> int:
         tasks = self.get_tasks()
         return sum(1 for task in tasks if task.assignee_id == assignee_id)
+    def get_task_by_id(self, id: UUID) -> Task:
+        task = self.task_repo.get_task_by_id(id)
+        return task
