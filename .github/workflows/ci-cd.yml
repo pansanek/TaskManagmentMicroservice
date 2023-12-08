@@ -46,11 +46,11 @@ jobs:
       run: |    
         sudo docker build ./task  --file ./task/Dockerfile --tag back-tests
         sudo docker run -e POSTGRES_PASSWORD=potemkin -p 5432:5432 -d postgres:latest        
-        sleep 5
+        sleep 10
         cd ./task
         alembic upgrade head  
         sudo docker run -p 8000:80 -e AMQP_URL=amqp://guest:guest@51.250.26.59:5672/ -e POSTGRES_URL=postgresql://postgres:potemkin@172.17.0.1:5432/test -d back-tests
-        sleep 5
+        sleep 10
     - name: Run e2e tests      
       run: |
         pytest ./task/tests/e2e 
