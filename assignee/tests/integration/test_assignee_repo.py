@@ -4,6 +4,11 @@ from uuid import UUID
 from app.models.assignee import Assignee
 from app.repositories.assignee_repo import AssigneeRepo
 
+@pytest.fixture()
+def assignee_repo() -> AssigneeRepo:
+    repo = AssigneeRepo()
+    return repo
+
 @pytest.fixture(scope='session')
 def test_assignees() -> list[Assignee]:
     return [
