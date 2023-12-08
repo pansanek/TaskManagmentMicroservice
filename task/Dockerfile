@@ -1,14 +1,14 @@
 FROM python:3.10
 
 # Выбор папки, в которой будет вестись работа
-WORKDIR /app
+WORKDIR /code
 
-COPY ./requirements.txt /app/
+COPY ./requirements.txt /code/
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./app /app
-COPY ./migration /app/migration
-COPY ./alembic.ini /app/
+COPY ./app /code/app
+COPY ./migration /code/migration
+COPY ./alembic.ini /code/alembic.ini
 
 EXPOSE 80
 
