@@ -1,0 +1,1 @@
+jikan_sqlalchemy_utils
