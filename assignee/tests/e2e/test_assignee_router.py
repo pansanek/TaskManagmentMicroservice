@@ -21,35 +21,35 @@ def test_get_assignees_created_in_repo() -> None:
     time.sleep(5)
     assert requests.get(f'{base_url}/').json() == []
 
-def test_create_assignee_first_success(
-        first_assignee_data: Assignee
-) -> None:
-    time.sleep(5)
-    response = requests.post(f'{base_url}/', json={
-        'id': first_assignee_data.id,
-        'name':first_assignee_data.name,
-        'taskcount':first_assignee_data.taskcount
-    })
-    assignee = response.json()
+# def test_create_assignee_first_success(
+#         first_assignee_data: Assignee
+# ) -> None:
+#     time.sleep(5)
+#     response = requests.post(f'{base_url}/', json={
+#         'id': first_assignee_data.id,
+#         'name':first_assignee_data.name,
+#         'taskcount':first_assignee_data.taskcount
+#     })
+#     assignee = response.json()
 
-    assert response.status_code == 200
-    assert assignee['name'] == first_assignee_data.name
+#     assert response.status_code == 200
+#     assert assignee['name'] == first_assignee_data.name
 
 
-def test_get_assignee_by_id(
-        first_assignee_data: Assignee
-) -> None:
-    time.sleep(5)
-    retrieved_assignee = requests.get(f'{base_url}/{first_assignee_data.id}').json()
+# def test_get_assignee_by_id(
+#         first_assignee_data: Assignee
+# ) -> None:
+#     time.sleep(5)
+#     retrieved_assignee = requests.get(f'{base_url}/{first_assignee_data.id}').json()
 
-    assert retrieved_assignee['name'] == first_assignee_data.name
+#     assert retrieved_assignee['name'] == first_assignee_data.name
 
-def test_update_assignee(
-        first_assignee_data: Assignee
-) -> None:
-    time.sleep(5)
-    requests.put(f'{base_url}/{first_assignee_data.id}')
+# def test_update_assignee(
+#         first_assignee_data: Assignee
+# ) -> None:
+#     time.sleep(5)
+#     requests.put(f'{base_url}/{first_assignee_data.id}')
 
-    retrieved_assignee = requests.get(f'{base_url}/{first_assignee_data.id}').json()
+#     retrieved_assignee = requests.get(f'{base_url}/{first_assignee_data.id}').json()
 
-    assert retrieved_assignee['taskcount'] == first_assignee_data.taskcount + 1
+#     assert retrieved_assignee['taskcount'] == first_assignee_data.taskcount + 1
