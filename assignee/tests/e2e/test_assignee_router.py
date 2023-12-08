@@ -6,7 +6,7 @@ from datetime import datetime
 
 from app.models.assignee import Assignee
 
-time.sleep(5)
+time.sleep(100)
 
 @pytest.fixture(scope='session')
 def base_url():
