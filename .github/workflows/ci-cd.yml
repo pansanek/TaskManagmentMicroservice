@@ -47,6 +47,7 @@ jobs:
         sudo docker build ./task  --file ./task/Dockerfile --tag back-tests
         sudo docker run -e POSTGRES_PASSWORD=potemkin -p 5432:5432 -d postgres:latest        
         sleep 5
+        cd ./task
         alembic upgrade head  
         sudo docker run -p 8000:80 -e AMQP_URL=amqp://guest:guest@maprac6-rabbitmq-1:5672/ -e POSTGRES_URL=postgresql://postgres:potemkin@maprac6-postgres-1:5432/test -d back-tests
         sleep 5
