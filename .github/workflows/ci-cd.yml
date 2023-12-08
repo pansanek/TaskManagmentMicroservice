@@ -59,7 +59,7 @@ jobs:
         pytest ./task/tests/unit
     - name: Prepare e2e tests      
       run: |    
-        sudo docker build ./task/test/e2e/ --file ./task/tests/e2e/Dockerfile --tag back-tests
+        sudo docker build ./task/tests/e2e/ --file ./task/tests/e2e/Dockerfile --tag back-tests
         sudo docker run -e POSTGRES_PASSWORD=potemkin -p 5432:5432 -d postgres:latest        
         sleep 10
         cd ./task
