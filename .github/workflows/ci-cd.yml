@@ -56,6 +56,7 @@ jobs:
   build-and-push-to-dh:
     name: Build and push to DockerHub
     runs-on: ubuntu-latest
+    needs: [test-task, test-assignee]
     steps:
       - uses: actions/checkout@v3
 
@@ -78,6 +79,7 @@ jobs:
   build-and-push-to-yc:
     name: Build and push to YandexCloud Registry
     runs-on: ubuntu-latest
+    needs: [test-task, test-assignee]
     steps:
       - uses: actions/checkout@v3
 
