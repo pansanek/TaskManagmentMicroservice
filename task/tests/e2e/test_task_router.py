@@ -9,7 +9,7 @@ from datetime import datetime
 from app.models.task import Task,TaskStatuses
 
 
-time.sleep(5)
+time.sleep(10)
 base_url = 'http://localhost:8000/api/tasks'
 
 
