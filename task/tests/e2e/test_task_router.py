@@ -10,7 +10,7 @@ from app.models.task import Task,TaskStatuses
 
 
 time.sleep(5)
-base_url = 'http://localhost:80/api/tasks'
+base_url = 'http://localhost:8000/api/tasks'
 
 
 @pytest.fixture(scope='session')
