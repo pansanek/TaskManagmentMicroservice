@@ -23,7 +23,7 @@ jobs:
     - name: Prepare e2e tests      
       run: |    
         sudo docker build ./assignee  --file ./assignee/Dockerfile --tag back-tests        
-        sudo docker run -p 8000:80 -e AMQP_URL=amqp://guest:guest@maprac6-rabbitmq-1:5672/ -e POSTGRES_URL=postgresql://postgres:potemkin@maprac6-postgres-1:5432/test -d back-tests
+        sudo docker run -p 8000:80 -e AMQP_URL=amqp://guest:guest@maprac6-rabbitmq-1:5672/ -e POSTGRES_URL=postgresql://postgres:potemkin@postgres:5432/test -d back-tests
         sleep 5
     - name: Run e2e tests      
       run: |
