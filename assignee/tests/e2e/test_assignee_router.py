@@ -18,11 +18,13 @@ def second_assignee_data() -> Assignee:
     return Assignee(id=12,name='Namee',taskcount=0)
 
 def test_get_assignees_created_in_repo() -> None:
+    time.sleep(5)
     assert requests.get(f'{base_url}/').json() == []
 
 def test_create_assignee_first_success(
         first_assignee_data: Assignee
 ) -> None:
+    time.sleep(5)
     response = requests.post(f'{base_url}/', json={
         'id': first_assignee_data.id,
         'name':first_assignee_data.name,
@@ -37,6 +39,7 @@ def test_create_assignee_first_success(
 def test_get_assignee_by_id(
         first_assignee_data: Assignee
 ) -> None:
+    time.sleep(5)
     retrieved_assignee = requests.get(f'{base_url}/{first_assignee_data.id}').json()
 
     assert retrieved_assignee['name'] == first_assignee_data.name
@@ -44,6 +47,7 @@ def test_get_assignee_by_id(
 def test_update_assignee(
         first_assignee_data: Assignee
 ) -> None:
+    time.sleep(5)
     requests.put(f'{base_url}/{first_assignee_data.id}')
 
     retrieved_assignee = requests.get(f'{base_url}/{first_assignee_data.id}').json()
