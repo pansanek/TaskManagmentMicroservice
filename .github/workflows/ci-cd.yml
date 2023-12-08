@@ -46,6 +46,7 @@ jobs:
       run: |    
         sudo docker build ./task  --file ./task/Dockerfile --tag back-tests
         sudo docker run -e POSTGRES_PASSWORD=potemkin -p 5432:5432 -d postgres:latest        
+        docker inspect postgres | grep "IPAddress"
         sleep 5
         cd ./task
         alembic upgrade head  
