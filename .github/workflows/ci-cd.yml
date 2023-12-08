@@ -23,10 +23,10 @@ jobs:
     - name: Prepare integration tests
       run: |
         sudo docker run --name pg-tests -e POSTGRES_PASSWORD=potemkin -p 5432:5432 -d postgres:latest
-        rm ./.env
+        rm ./assignee/.env
         echo "AMQP_URL=$AMQP_URL
         POSTGRES_URL=$POSTGRES_URL
-        " > .env
+        " > ./assignee/.env
         sleep 5
         alembic upgrade head
       env:
