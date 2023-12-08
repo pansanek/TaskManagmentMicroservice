@@ -56,6 +56,7 @@ jobs:
         pytest ./task/tests/e2e 
   build-and-push-to-dh:
     name: Build and push to DockerHub
+    needs: [test-task, test-assignee]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -78,6 +79,7 @@ jobs:
   
   build-and-push-to-yc:
     name: Build and push to YandexCloud Registry
+    needs: [test-task, test-assignee]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
