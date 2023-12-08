@@ -6,7 +6,7 @@ import requests
 from uuid import UUID, uuid4
 from datetime import datetime
 
-from task.app.models.task import Task,TaskStatuses
+from app.models.task import Task,TaskStatuses
 
 
 time.sleep(5)
