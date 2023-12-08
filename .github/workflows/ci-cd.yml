@@ -7,6 +7,15 @@ on:
     branches: ["tests"]
 
 jobs:
+  debug:
+    name: Debug Output
+    runs-on: ubuntu-latest  
+    steps:
+    - name: Debug Output
+      run: |
+        echo "Current Directory: $(pwd)"
+        echo "Contents of the current directory: $(ls)"
+  
   test-assignee:  
     name: Run assignee tests
     runs-on: ubuntu-latest  
