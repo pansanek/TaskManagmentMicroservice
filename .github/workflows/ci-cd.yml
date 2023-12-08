@@ -12,14 +12,14 @@ jobs:
     runs-on: ubuntu-latest  
     steps:
     - uses: actions/checkout@v3
-    # - name: Prepare unit tests      
-    #   run: |
-    #     sudo apt update
-    #     sudo apt install -y python3-pip        
-    #     pip install -r ./assignee/requirements.txt
-    # - name: Run unit tests
-    #   run: |        
-    #     pytest ./assignee/tests/unit
+    - name: Prepare unit tests      
+      run: |
+        sudo apt update
+        sudo apt install -y python3-pip        
+        pip install -r ./assignee/requirements.txt
+    - name: Run unit tests
+      run: |        
+        pytest ./assignee/tests/unit
     - name: Prepare e2e tests      
       run: |    
         sudo docker build ./assignee  --file ./assignee/Dockerfile --tag back-tests        
@@ -34,14 +34,14 @@ jobs:
     runs-on: ubuntu-latest  
     steps:
     - uses: actions/checkout@v3
-    # - name: Prepare unit tests      
-    #   run: |
-    #     sudo apt update
-    #     sudo apt install -y python3-pip        
-    #     pip install -r ./task/requirements.txt
-    # - name: Run unit tests
-    #   run: |        
-    #     pytest ./task/tests/unit
+    - name: Prepare unit tests      
+      run: |
+        sudo apt update
+        sudo apt install -y python3-pip        
+        pip install -r ./task/requirements.txt
+    - name: Run unit tests
+      run: |        
+        pytest ./task/tests/unit
     - name: Prepare e2e tests      
       run: |    
         sudo docker build ./task  --file ./task/Dockerfile --tag back-tests
