@@ -23,6 +23,7 @@ tasks: list[Task] = [
 
 
 class TaskRepo:
+    
     def __init__(self, clear: bool = False) -> None:
         if clear:
             tasks.clear()

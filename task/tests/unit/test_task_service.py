@@ -4,7 +4,7 @@ from uuid import uuid4, UUID
 from datetime import datetime, timedelta
 from app.services.task_service import TaskService
 from app.models.task import TaskStatuses, Task
-from app.repositories.db_task_repo import TaskRepo
+from app.repositories.task_repo import TaskRepo
 
 
 @pytest.fixture(scope='session')
