@@ -59,7 +59,7 @@ jobs:
         pytest ./task/tests/unit
     - name: Prepare integration tests
       run: |
-        sudo docker run --name pg-tests -e POSTGRES_PASSWORD=pщеуьлшт -p 5432:5432 -d postgres:latest
+        sudo docker run --name pg-tests -e POSTGRES_PASSWORD=potemkin -p 5432:5432 -d postgres:latest
         rm ./task/.env
         echo "AMQP_URL=$AMQP_URL
         POSTGRES_URL=$POSTGRES_URL
@@ -68,8 +68,8 @@ jobs:
         cd ./task
         alembic upgrade head
       env:
-        AMQP_URL: amqp://guest:guest@maprac6-rabbitmq-1:5672/
-        POSTGRES_URL: postgresql://postgres:potemkin@maprac6-postgres-1:5432/postgres
+        AMQP_URL: amqp://guest:guest@51.250.26.59:5672/
+        POSTGRES_URL: postgresql://postgres:potemkin@172.17.0.1:5432/postgres
 
     - name: Run integration tests
       run: |
