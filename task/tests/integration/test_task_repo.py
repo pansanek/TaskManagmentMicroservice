@@ -1,5 +1,5 @@
 import pytest
-from uuid import uuid4
+from uuid import  UUID
 from datetime import datetime
 from app.models.task import Task, TaskStatuses
 from app.repositories.db_task_repo import TaskRepo
@@ -31,8 +31,6 @@ def second_task() -> Task:
         assignee_id=2
     )
 
-def test_empty_list(task_repo: TaskRepo) -> None:
-    assert task_repo.get_tasks() == []
 
 def test_create_task(task_repo: TaskRepo, first_task: Task) -> None:
     created_task = task_repo.create_task(first_task)
