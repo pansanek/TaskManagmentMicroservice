@@ -12,8 +12,8 @@ def task_repo() -> TaskRepo:
 @pytest.fixture(scope='session')
 def first_task() -> Task:
     return Task(
-        id=UUID('00000000-0000-0000-0000-000000000111'),
-        title='Task 1',
+        id=UUID('00000000-0000-0000-0000-000000111111'),
+        title='Task1',
         description='Description for Task 1',
         due_date=datetime.now(),
         status=TaskStatuses.TODO,
