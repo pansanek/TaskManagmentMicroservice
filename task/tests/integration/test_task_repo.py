@@ -37,19 +37,16 @@ def test_create_task(task_repo: TaskRepo, first_task: Task) -> None:
     assert created_task == first_task
 
 def test_get_task_by_id(task_repo: TaskRepo, first_task: Task) -> None:
-    task_repo.create_task(first_task)
     retrieved_task = task_repo.get_task_by_id(first_task.id)
     assert retrieved_task == first_task
 
 def test_set_status(task_repo: TaskRepo, first_task: Task) -> None:
-    task_repo.create_task(first_task)
     new_status = TaskStatuses.IN_PROGRESS
     first_task.status = new_status
     updated_task = task_repo.set_status(first_task)
     assert updated_task.status == new_status
 
 def test_start_task(task_repo: TaskRepo, first_task: Task) -> None:
-    task_repo.create_task(first_task)
     new_status = TaskStatuses.IN_PROGRESS
     first_task.status = new_status
     started_task = task_repo.start_task(first_task)
