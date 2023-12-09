@@ -69,7 +69,7 @@ jobs:
         alembic upgrade head
       env:
         AMQP_URL: amqp://guest:guest@51.250.26.59:5672/
-        POSTGRES_URL: postgresql://postgres:potemkin@172.17.0.1:5432/postgres
+        POSTGRES_URL: postgresql://postgres:potemkin@172.17.0.1:5432/tasks
 
     - name: Run integration tests
       run: |
@@ -81,7 +81,7 @@ jobs:
         sleep 10
         cd ./task
         alembic upgrade head  
-        sudo docker run -p 8000:80 -e AMQP_URL=amqp://guest:guest@51.250.26.59:5672/ -e POSTGRES_URL=postgresql://postgres:potemkin@172.17.0.1:5432/test -d back-tests
+        sudo docker run -p 8000:80 -e AMQP_URL=amqp://guest:guest@51.250.26.59:5672/ -e POSTGRES_URL=postgresql://postgres:potemkin@172.17.0.1:5432/tasks -d back-tests
         sleep 10
     - name: Run e2e tests      
       run: |
