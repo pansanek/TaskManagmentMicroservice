@@ -65,6 +65,7 @@ jobs:
         POSTGRES_URL=$POSTGRES_URL
         " > ./task/.env
         sleep 5
+        cd ./task
         alembic upgrade head
       env:
         AMQP_URL: amqp://guest:guest@maprac6-rabbitmq-1:5672/
