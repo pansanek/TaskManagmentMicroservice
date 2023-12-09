@@ -7,7 +7,7 @@ on:
     branches: ["master"]
 
 jobs:
-  test:  
+  test-assignee:
     name: Run assignee tests
     runs-on: ubuntu-latest  
     steps:
@@ -20,6 +20,20 @@ jobs:
     - name: Run unit tests
       run: |        
         pytest ./assignee/tests/unit
+    - name: Prepare integration tests
+      run: |
+        sudo docker run --name pg-tests -e POSTGRES_PASSWORD=potemkin -p 5432:5432 -d postgres:latest
+        rm ./assignee/.env
+        echo "AMQP_URL=$AMQP_URL
+        POSTGRES_URL=$POSTGRES_URL
+        " > ./assignee/.env
+        sleep 5
+      env:
+        AMQP_URL: amqp://guest:guest@maprac6-rabbitmq-1:5672/
+        POSTGRES_URL: postgresql://postgres:potemkin@maprac6-postgres-1:5432/postgres
+    - name: Run integration tests
+      run: |
+        pytest ./assignee/tests/integration
     - name: Prepare e2e tests      
       run: |    
         sudo docker build ./assignee  --file ./assignee/Dockerfile --tag back-tests
@@ -31,7 +45,35 @@ jobs:
     - name: Run e2e tests      
       run: |
         pytest ./assignee/tests/e2e
+  test-task:
+    name: Run tasks tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Prepare unit tests
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip
+          pip install -r ./task/requirements.txt
+      - name: Run unit tests
+        run: |
+          pytest ./task/tests/unit
 
+      - name: Run integration tests
+        run: |
+          pytest ./task/tests/integration
+      - name: Prepare e2e tests
+        run: |
+          sudo docker build ./task  --file ./task/Dockerfile --tag back-tests
+          sudo docker run -e POSTGRES_PASSWORD=potemkin -p 5432:5432 -d postgres:latest
+          sleep 10
+          cd ./task
+          alembic upgrade head
+          sudo docker run -p 8000:80 -e AMQP_URL=amqp://guest:guest@51.250.26.59:5672/ -e POSTGRES_URL=postgresql://postgres:potemkin@172.17.0.1:5432/test -d back-tests
+          sleep 10
+      - name: Run e2e tests
+        run: |
+          pytest ./task/tests/e2e
   build-and-push-to-dh:
     name: Build and push to DockerHub
     runs-on: ubuntu-latest
