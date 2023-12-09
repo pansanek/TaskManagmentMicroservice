@@ -12,7 +12,7 @@ def task_repo() -> TaskRepo:
 @pytest.fixture(scope='session')
 def first_task() -> Task:
     return Task(
-        id=uuid4(),
+        id=UUID('00000000-0000-0000-0000-000000000111'),
         title='Task 1',
         description='Description for Task 1',
         due_date=datetime.now(),
@@ -23,7 +23,7 @@ def first_task() -> Task:
 @pytest.fixture(scope='session')
 def second_task() -> Task:
     return Task(
-        id=uuid4(),
+        id=UUID('00000000-0000-0000-0000-000000000112'),
         title='Task 2',
         description='Description for Task 2',
         due_date=datetime.now(),
