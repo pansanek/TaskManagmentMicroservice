@@ -6,7 +6,7 @@ from app.repositories.assignee_repo import AssigneeRepo
 
 # Фикстура для создания репозитория
 @pytest.fixture()
-def assignee_repo() -> AssigneeRepo:
+def assignee_repo_test() -> AssigneeRepo:
     repo = AssigneeRepo()
     return repo
 
