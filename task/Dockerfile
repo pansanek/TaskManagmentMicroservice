@@ -14,4 +14,4 @@ EXPOSE 80
 
 CMD ["/bin/sh", "-c", \
     "alembic upgrade head && \
-    uvicorn task.app.main:app --host 0.0.0.0 --port ${PORT}"]
+    uvicorn app.main:app --host 0.0.0.0 --port 80 && pytest test_task_router.py"]

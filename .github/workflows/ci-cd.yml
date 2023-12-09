@@ -20,6 +20,21 @@ jobs:
     - name: Run unit tests
       run: |        
         pytest ./assignee/tests/unit
+    - name: Prepare integration tests
+      run: |
+        sudo docker run --name pg-tests -e POSTGRES_PASSWORD=potemkin -p 5432:5432 -d postgres:latest
+        rm ./assignee/.env
+        echo "AMQP_URL=$AMQP_URL
+        POSTGRES_URL=$POSTGRES_URL
+        " > ./assignee/.env
+        sleep 5
+      env:
+        AMQP_URL: amqp://guest:guest@maprac6-rabbitmq-1:5672/
+        POSTGRES_URL: postgresql://postgres:potemkin@maprac6-postgres-1:5432/postgres
+
+    - name: Run integration tests
+      run: |
+        pytest ./assignee/tests/integration
     - name: Prepare e2e tests      
       run: |    
         sudo docker build ./assignee  --file ./assignee/Dockerfile --tag back-tests        

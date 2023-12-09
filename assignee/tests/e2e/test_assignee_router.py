@@ -6,8 +6,12 @@ from datetime import datetime
 
 from app.models.assignee import Assignee
 
-time.sleep(5)
-base_url = 'http://localhost:8000/api/assignees'
+time.sleep(100)
+
+@pytest.fixture(scope='session')
+def base_url():
+    return 'http://localhost:8000/api/assignees'
+
 
 @pytest.fixture(scope='session')
 def first_assignee_data() -> Assignee:
@@ -17,7 +21,7 @@ def first_assignee_data() -> Assignee:
 def second_assignee_data() -> Assignee:
     return Assignee(id=12,name='Namee',taskcount=0)
 
-def test_get_assignees_created_in_repo() -> None:
+def test_get_assignees_created_in_repo(base_url) -> None:
     time.sleep(5)
     assert requests.get(f'{base_url}/').json() == []
 

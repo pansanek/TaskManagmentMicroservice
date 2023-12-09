@@ -1,13 +1,13 @@
 FROM python:3.10
 
-WORKDIR /task
+WORKDIR /code
 
-COPY ./task/requirements.txt /task/
-RUN pip install --no-cache-dir -r /task/requirements.txt
+COPY ./requirements.txt /code/
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./task/app /task/app
-COPY ./task/migration /task/migration
-COPY ./task/alembic.ini /task/alembic.ini
+COPY ./app /code/app
+COPY ./migration /code/migration
+COPY ./alembic.ini /code/alembic.ini
 
 EXPOSE 80
 
