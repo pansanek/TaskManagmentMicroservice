@@ -3,6 +3,8 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 
+import prometheus_client
+
 from app.models.create_task_request import CreateTaskRequest
 from app.services.task_service import TaskService
 from app.models.task import Task
@@ -10,9 +12,26 @@ from app.models.task import Task
 from app.rabbitmq import process_created_task
 
 from app.rabbitmq import send_assignee_update_message
+from fastapi import Response
 
 task_router = APIRouter(prefix='/tasks', tags=['Tasks'])
-
+metrics_router = APIRouter(tags=['Metrics'])
+created_task_count = prometheus_client.Counter(
+    "created_task_count",
+    "Number of created tasks"
+)
+started_task_count = prometheus_client.Counter(
+    "started_task_count",
+    "Number of started tasks"
+)
+complete_task_count = prometheus_client.Counter(
+    "complete_task_count",
+    "Number of completed tasks"
+)
+cancel_task_count = prometheus_client.Counter(
+    "cancel_task_count",
+    "Number of canceled tasks"
+)
 @task_router.get('/')
 def get_tasks(task_service: TaskService = Depends(TaskService)) -> list[Task]:
     return task_service.get_tasks()
@@ -25,6 +44,7 @@ def create_task(
     try:
         task = task_service.create_task(task_info.id,task_info.title, task_info.description, task_info.due_date, task_info.assignee_id)
         asyncio.run(send_assignee_update_message(task_info.assignee_id))
+        created_task_count.inc(1)
         return task.dict()
     except KeyError:
         raise HTTPException(400, f'Task with title={task_info.title} already exists')
@@ -33,6 +53,7 @@ def create_task(
 def start_task(id: UUID, task_service: TaskService = Depends(TaskService)) -> Task:
     try:
         task = task_service.start_task(id)
+        started_task_count.inc(1)
         return task.dict()
     except KeyError:
         raise HTTPException(404, f'Task with id={id} not found')
@@ -43,6 +64,7 @@ def start_task(id: UUID, task_service: TaskService = Depends(TaskService)) -> Ta
 def complete_task(id: UUID, task_service: TaskService = Depends(TaskService)) -> Task:
     try:
         task = task_service.complete_task(id)
+        complete_task_count.inc(1)
         return task.dict()
     except KeyError:
         raise HTTPException(404, f'Task with id={id} not found')
@@ -53,8 +75,16 @@ def complete_task(id: UUID, task_service: TaskService = Depends(TaskService)) ->
 def cancel_task(id: UUID, task_service: TaskService = Depends(TaskService)) -> Task:
     try:
         task = task_service.cancel_task(id)
+        cancel_task_count.inc(1)
         return task.dict()
     except KeyError:
         raise HTTPException(404, f'Task with id={id} not found')
     except ValueError:
         raise HTTPException(400, f'Task with id={id} can\'t be canceled')
+
+@metrics_router.get('/metrics')
+def get_metrics():
+    return Response(
+        media_type="text/plain",
+        content=prometheus_client.generate_latest()
+    )

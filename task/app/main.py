@@ -3,7 +3,7 @@ import asyncio
 from fastapi import FastAPI
 
 from app import rabbitmq
-from app.endpoints.task_router import task_router
+from app.endpoints.task_router import task_router,metrics_router
 
 app = FastAPI(title='Task Service')
 
@@ -14,3 +14,4 @@ def startup():
     asyncio.ensure_future(rabbitmq.consume_tasks(loop))
 
 app.include_router(task_router,prefix='/api')
+app.include_router(metrics_router)
