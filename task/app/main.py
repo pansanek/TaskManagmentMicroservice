@@ -8,13 +8,13 @@ import logging
 from logging_loki import LokiHandler
 app = FastAPI(title='Task Service')
 
-# loki_logs_handler = LokiHandler(
-#     url="http://loki:3100/loki/api/v1/push",
-#     tags={"application": "fastapi"},
-#     version="1",
-# )
-# logger = logging.getLogger("uvicorn.access")
-# logger.addHandler(loki_logs_handler)
+loki_logs_handler = LokiHandler(
+    url="http://loki:3100/loki/api/v1/push",
+    tags={"application": "fastapi"},
+    version="1",
+)
+logger = logging.getLogger("uvicorn.access")
+logger.addHandler(loki_logs_handler)
 
 @app.on_event('startup')
 def startup():
