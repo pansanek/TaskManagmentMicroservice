@@ -15,9 +15,7 @@ class TaskRepo:
 
     def _map_to_model(self, task: DBTask) -> Task:
         result = Task.from_orm(task)
-        # if task.assignee is not 0:
-        #     result.assignee = self.assignee_repo.get_assignee_by_id(
-        #         task.assignee)
+
 
         return result
 
