@@ -1,8 +1,10 @@
 import asyncio
+import json
 from typing import List
 from uuid import UUID
 
 import httpx
+import requests
 from fastapi import APIRouter, Depends, HTTPException, Security, status
 
 from app.models.create_task_request import CreateTaskRequest
@@ -12,8 +14,6 @@ from app.models.task import Task
 from app.rabbitmq import process_created_task
 
 from app.rabbitmq import send_assignee_update_message
-from jose import JWTError, jwt
-from keycloak import KeycloakOpenID
 from fastapi.security import OAuth2AuthorizationCodeBearer, OAuth2PasswordBearer
 
 task_router = APIRouter(prefix='/tasks', tags=['Tasks'])
@@ -23,18 +23,19 @@ oauth2_scheme = OAuth2PasswordBearer(
     scopes={"openid": "Read data with openid scope"})
 
 async def get_user_info(token: str = Depends(oauth2_scheme)):
+    url = "http://localhost:8080/realms/myrealm/protocol/openid-connect/userinfo"
+
+    payload = {}
+    headers = {
+        'Authorization': f'Bearer {token}'}
+
     try:
-        decoded_token = jwt.decode(token,
-                                   algorithms=["RS256"])
-        user_info = {
-            "sub": decoded_token.get("sub"),
-            "username": decoded_token.get("preferred_username"),
-            "email": decoded_token.get("email"),
-            "roles": decoded_token.get("realm_access", {}).get("roles", [])
-        }
-        return user_info
-    except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+        response = requests.request("GET", url, headers=headers, data=payload)
+        response.raise_for_status()  # Поднимаем исключение в случае ошибки HTTP
+        return response.json()
+    except requests.RequestException as e:
+        # Обработка ошибок запроса
+        raise HTTPException(status_code=500, detail=f"Error while fetching user info: {str(e)}")
 
 
 # Example route that requires authentication
@@ -43,12 +44,11 @@ async def secure_data(current_user: dict = Depends(oauth2_scheme)):
     return {"message": "You have access to secure data!", "user": current_user}
 
 
-# Пример использования декоратора в вашем коде
 @task_router.get('/')
-def get_tasks(task_service: TaskService = Depends(TaskService),
+async def get_tasks(task_service: TaskService = Depends(TaskService),
               current_user: dict = Depends(get_user_info)) -> list[Task]:
-    if "myuser" not in current_user["roles"]:
-        raise HTTPException(status_code=403, detail="Permission denied, user must have 'admin' role")
+    if "Viewer" not in current_user["realm_access"]["roles"]:
+        raise HTTPException(status_code=403, detail="Permission denied, user must have 'Viewer' role")
     return task_service.get_tasks()
 
 
