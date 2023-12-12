@@ -29,15 +29,14 @@ def get_user_info(token: str = Depends(oauth2_scheme)):
 
     print(str(headers))
     try:
-        response = requests.request("GET", url, headers=headers)
+        response = requests.get(url,headers=headers)
+        print(response.request.headers)
         print(f"Response: {response}")
         return response.json()
     except requests.RequestException as e:
-        # Обработка ошибок запроса
         raise HTTPException(status_code=500, detail=f"Error while fetching user info: {str(e)}")
 
 
-# Example route that requires authentication
 @task_router.get("/secure-data")
 def secure_data(current_user: dict = Depends(oauth2_scheme)):
     return {"message": "You have access to secure data!", "user": current_user}
