@@ -34,7 +34,7 @@ def get_user_info(token: str = Depends(oauth2_scheme)):
         print(f"Response: {response}")
         return response.json()
     except requests.RequestException as e:
-        raise HTTPException(status_code=500, detail=f"Error while fetching user info: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"{str(e)}")
 
 
 @task_router.get("/secure-data")
