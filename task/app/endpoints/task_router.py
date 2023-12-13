@@ -14,39 +14,59 @@ from app.models.task import Task
 from app.rabbitmq import process_created_task
 
 
-from fastapi.security import OAuth2AuthorizationCodeBearer, OAuth2PasswordBearer
+from fastapi.security import  OAuth2PasswordBearer
+from keycloak import KeycloakOpenID
 
 task_router = APIRouter(prefix='/tasks', tags=['Tasks'])
 
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="http://localhost:8080/realms/myrealm/protocol/openid-connect/token",
-    scopes={"openid": "Read data with openid scope"})
+# oauth2_scheme = OAuth2PasswordBearer(
+#     tokenUrl="http://keycloak:8080/realms/myrealm/protocol/openid-connect/token",
+#     scopes={"openid": "Read data with openid scope"})
 
-def get_user_info(token: str = Depends(oauth2_scheme)):
+def get_user_info(username: str,password :str):
+    token_url = "http://keycloak:8080/realms/myrealm/protocol/openid-connect/token"
+    data = {
+        "grant_type": "password",
+        "client_id": "myclient",
+        "client_secret": "7EEuCHQvc8eQ92zTQJvFuWelkS4tpBP1",
+        "username": username,
+        "password": password,
+        "scope": "openid"
+    }
+    response = requests.post(token_url, data=data)
+
     url = "http://keycloak:8080/realms/myrealm/protocol/openid-connect/userinfo"
     headers = {
-        "Authorization": f"Bearer {token}"}
-    print(str(headers))
+        "Authorization": f"Bearer {response.json()['access_token']}"}
     try:
         response = requests.get(url,headers=headers)
-        print(response.request.headers)
-        print(f"Response: {response}")
         return response.json()
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=f"{str(e)}")
+    # keycloak_openid = KeycloakOpenID(server_url="http://keycloak:8080/realms/myrealm/",
+    #                                  client_id="myclient",
+    #                                  realm_name="myrealm",
+    #                                  client_secret_key="7EEuCHQvc8eQ92zTQJvFuWelkS4tpBP1",
+    #                                  )
+    # config_well_known = keycloak_openid.well_known()
+    # userinfo = keycloak_openid.userinfo(token)
+    # print(userinfo)
 
-
-@task_router.get("/secure-data")
-def secure_data(current_user: dict = Depends(oauth2_scheme)):
-    return {"message": "You have access to secure data!", "user": current_user}
+# @task_router.get("/secure-data")
+# def secure_data(current_user: dict = Depends(oauth2_scheme)):
+#     return {"message": "You have access to secure data!", "user": current_user}
 
 
 @task_router.get('/')
 def get_tasks(task_service: TaskService = Depends(TaskService),
               current_user: dict = Depends(get_user_info)) -> list[Task]:
-    if "Viewer" or "Admin" not in current_user["realm_access"]["roles"]:
-        raise HTTPException(status_code=403, detail="Permission denied")
-    return task_service.get_tasks()
+    print(current_user["realm_access"]["roles"])
+    if "Viewer" in current_user["realm_access"]["roles"]:
+        return task_service.get_tasks()
+    elif "Creator" in current_user["realm_access"]["roles"]:
+        return task_service.get_tasks()
+    raise HTTPException(status_code=403, detail="Permission denied")
+
 
 
 @task_router.post('/')
@@ -55,7 +75,7 @@ def create_task(
         task_service: TaskService = Depends(TaskService),
         current_user: dict = Depends(get_user_info)
 ) -> Task:
-    if "Admin" not in current_user["realm_access"]["roles"]:
+    if "Creator" not in current_user["realm_access"]["roles"]:
         raise HTTPException(status_code=403, detail="Permission denied")
     try:
         task = task_service.create_task(task_info.id, task_info.title, task_info.description, task_info.due_date,
@@ -70,7 +90,7 @@ def create_task(
 def start_task(id: UUID, task_service: TaskService = Depends(TaskService),
                current_user: dict = Depends(get_user_info)
                ) -> Task:
-    if "Admin" not in current_user["realm_access"]["roles"]:
+    if "Creator" not in current_user["realm_access"]["roles"]:
         raise HTTPException(status_code=403, detail="Permission denied")
     try:
         task = task_service.start_task(id)
@@ -85,7 +105,7 @@ def start_task(id: UUID, task_service: TaskService = Depends(TaskService),
 def complete_task(id: UUID, task_service: TaskService = Depends(TaskService),
                   current_user: dict = Depends(get_user_info)
                   ) -> Task:
-    if "Admin" not in current_user["realm_access"]["roles"]:
+    if "Creator" not in current_user["realm_access"]["roles"]:
         raise HTTPException(status_code=403, detail="Permission denied")
     try:
         task = task_service.complete_task(id)
@@ -100,7 +120,7 @@ def complete_task(id: UUID, task_service: TaskService = Depends(TaskService),
 def cancel_task(id: UUID, task_service: TaskService = Depends(TaskService),
                 current_user: dict = Depends(get_user_info)
                 ) -> Task:
-    if "Admin" not in current_user["realm_access"]["roles"]:
+    if "Creator" not in current_user["realm_access"]["roles"]:
         raise HTTPException(status_code=403, detail="Permission denied")
     try:
         task = task_service.cancel_task(id)
