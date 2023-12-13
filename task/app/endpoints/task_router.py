@@ -13,7 +13,7 @@ from app.models.task import Task
 
 from app.rabbitmq import process_created_task
 
-from app.rabbitmq import send_assignee_update_message
+
 from fastapi.security import OAuth2AuthorizationCodeBearer, OAuth2PasswordBearer
 
 task_router = APIRouter(prefix='/tasks', tags=['Tasks'])
@@ -23,10 +23,9 @@ oauth2_scheme = OAuth2PasswordBearer(
     scopes={"openid": "Read data with openid scope"})
 
 def get_user_info(token: str = Depends(oauth2_scheme)):
-    url = "http://maprac6-keycloak-1:8080/realms/myrealm/protocol/openid-connect/userinfo"
+    url = "http://keycloak:8080/realms/myrealm/protocol/openid-connect/userinfo"
     headers = {
         "Authorization": f"Bearer {token}"}
-
     print(str(headers))
     try:
         response = requests.get(url,headers=headers)
