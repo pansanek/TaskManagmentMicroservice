@@ -6,60 +6,83 @@ from uuid import UUID
 import httpx
 import requests
 from fastapi import APIRouter, Depends, HTTPException, Security, status
-
+import webbrowser
 from app.models.create_task_request import CreateTaskRequest
 from app.services.task_service import TaskService
 from app.models.task import Task
 
+from fastapi.responses import HTMLResponse
 from app.rabbitmq import process_created_task
 
 
-from fastapi.security import  OAuth2PasswordBearer
+from fastapi.security import OAuth2AuthorizationCodeBearer
 from keycloak import KeycloakOpenID
+import requests
+from fastapi import APIRouter
+from fastapi import Depends, HTTPException
+from jose import JWTError, jwt
+from starlette.requests import Request
+from starlette.responses import RedirectResponse
 
+keycloak_authorization_url = "http://keycloak:8080/realms/myrealm/protocol/openid-connect/auth"
+keycloak_token_url = "http://keycloak:8080/realms/myrealm/protocol/openid-connect/token"
+keycloak_client_id = "myclient"
+keycloak_client_secret = "7EEuCHQvc8eQ92zTQJvFuWelkS4tpBP1"
 task_router = APIRouter(prefix='/tasks', tags=['Tasks'])
 
-# oauth2_scheme = OAuth2PasswordBearer(
-#     tokenUrl="http://keycloak:8080/realms/myrealm/protocol/openid-connect/token",
-#     scopes={"openid": "Read data with openid scope"})
+@task_router.get("/login")
+async def login(request: Request):
+    # Manually specify redirect_uri and state
+    custom_redirect_uri = "http://keycloak:80/api/tasks/callback"
+    custom_state = "your_custom_state"
 
-def get_user_info(username: str,password :str):
+    # Construct the authorization URL with the specified parameters
+    authorization_url = (f"{keycloak_authorization_url}?response_type=code&client_id={keycloak_client_id}&redirect_uri="
+                         f"{custom_redirect_uri}&state={custom_state}&client_secret={keycloak_client_secret}&"
+                         f"scope=openid profile email roles")
+
+    # Redirect the user to the authorization URL
+    return RedirectResponse(url=authorization_url.replace("keycloak", "localhost"))
+
+@task_router.get("/callback")
+async def callback(request: Request):
+    print(request.json())
+    code = request.query_params.get("code")
+    token = get_token(code)
+    print(token)
+    roles = get_user_info(token)
+    print(roles)
+    return roles
+
+def get_token(code: str):
+    print("GET TOKEN")
     token_url = "http://keycloak:8080/realms/myrealm/protocol/openid-connect/token"
     data = {
-        "grant_type": "password",
-        "client_id": "myclient",
-        "client_secret": "7EEuCHQvc8eQ92zTQJvFuWelkS4tpBP1",
-        "username": username,
-        "password": password,
-        "scope": "openid"
+        "grant_type": "authorization_code",
+        "client_id": keycloak_client_id,
+        "client_secret": keycloak_client_secret,
+        "code": code,
+        "scope": "openid profile email roles",
+        "redirect_uri": "http://localhost:80/api/tasks/callback"
     }
     response = requests.post(token_url, data=data)
+    print(response)
+    return response.json()['access_token']
 
+def get_user_info(token: str):
+    print("GET USER")
     url = "http://keycloak:8080/realms/myrealm/protocol/openid-connect/userinfo"
     headers = {
-        "Authorization": f"Bearer {response.json()['access_token']}"}
-    try:
-        response = requests.get(url,headers=headers)
-        return response.json()
-    except requests.RequestException as e:
-        raise HTTPException(status_code=500, detail=f"{str(e)}")
-    # keycloak_openid = KeycloakOpenID(server_url="http://keycloak:8080/realms/myrealm/",
-    #                                  client_id="myclient",
-    #                                  realm_name="myrealm",
-    #                                  client_secret_key="7EEuCHQvc8eQ92zTQJvFuWelkS4tpBP1",
-    #                                  )
-    # config_well_known = keycloak_openid.well_known()
-    # userinfo = keycloak_openid.userinfo(token)
-    # print(userinfo)
+        "Authorization": f"Bearer {token}"}
+    response = requests.get(url, headers=headers)
+    print(response)
+    return response.json()
 
-# @task_router.get("/secure-data")
-# def secure_data(current_user: dict = Depends(oauth2_scheme)):
-#     return {"message": "You have access to secure data!", "user": current_user}
 
 
 @task_router.get('/')
 def get_tasks(task_service: TaskService = Depends(TaskService),
-              current_user: dict = Depends(get_user_info)) -> list[Task]:
+              current_user: dict = Depends(callback)) -> list[Task]:
     print(current_user["realm_access"]["roles"])
     if "Viewer" in current_user["realm_access"]["roles"]:
         return task_service.get_tasks()
@@ -129,3 +152,5 @@ def cancel_task(id: UUID, task_service: TaskService = Depends(TaskService),
         raise HTTPException(404, f'Task with id={id} not found')
     except ValueError:
         raise HTTPException(400, f'Task with id={id} can\'t be canceled')
+
+
