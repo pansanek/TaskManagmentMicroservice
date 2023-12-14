@@ -24,25 +24,26 @@ from jose import JWTError, jwt
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-keycloak_authorization_url = "http://keycloak:8080/realms/myrealm/protocol/openid-connect/auth"
-keycloak_token_url = "http://keycloak:8080/realms/myrealm/protocol/openid-connect/token"
+host_ip="192.168.1.100"
+keycloak_authorization_url = f"http://{host_ip}:8080/realms/myrealm/protocol/openid-connect/auth"
+keycloak_token_url = f"http://{host_ip}:8080/realms/myrealm/protocol/openid-connect/token"
 keycloak_client_id = "myclient"
-keycloak_client_secret = "7EEuCHQvc8eQ92zTQJvFuWelkS4tpBP1"
+keycloak_client_secret = f"7EEuCHQvc8eQ92zTQJvFuWelkS4tpBP1"
 task_router = APIRouter(prefix='/tasks', tags=['Tasks'])
-
+user_role="Not authorized"
 @task_router.get("/login")
 async def login(request: Request):
     # Manually specify redirect_uri and state
-    custom_redirect_uri = "http://keycloak:80/api/tasks/callback"
+    custom_redirect_uri = f"http://{host_ip}:80/api/tasks/callback"
     custom_state = "your_custom_state"
 
     # Construct the authorization URL with the specified parameters
     authorization_url = (f"{keycloak_authorization_url}?response_type=code&client_id={keycloak_client_id}&redirect_uri="
                          f"{custom_redirect_uri}&state={custom_state}&client_secret={keycloak_client_secret}&"
-                         f"scope=openid profile email roles")
+                         f"scope=openid profile")
 
     # Redirect the user to the authorization URL
-    return RedirectResponse(url=authorization_url.replace("keycloak", "localhost"))
+    return RedirectResponse(url=authorization_url)
 
 @task_router.get("/callback")
 async def callback(request: Request):
@@ -52,26 +53,30 @@ async def callback(request: Request):
     print(token)
     roles = get_user_info(token)
     print(roles)
-    return roles
+    if "Viewer" in roles["realm_access"]["roles"]:
+        user_role = "Viewer"
+        return f"Authorized! Your role is:{user_role}"
+    elif "Creator" in roles["realm_access"]["roles"]:
+        user_role = "Creator"
+        return f"Authorized! Your role is: {user_role}"
+    return "Not authorized"
 
 def get_token(code: str):
-    print("GET TOKEN")
-    token_url = "http://keycloak:8080/realms/myrealm/protocol/openid-connect/token"
+    token_url = f"http://{host_ip}:8080/realms/myrealm/protocol/openid-connect/token"
     data = {
         "grant_type": "authorization_code",
         "client_id": keycloak_client_id,
         "client_secret": keycloak_client_secret,
         "code": code,
         "scope": "openid profile email roles",
-        "redirect_uri": "http://localhost:80/api/tasks/callback"
+        "redirect_uri": f"http://{host_ip}:80/api/tasks/callback"
     }
     response = requests.post(token_url, data=data)
     print(response)
     return response.json()['access_token']
 
 def get_user_info(token: str):
-    print("GET USER")
-    url = "http://keycloak:8080/realms/myrealm/protocol/openid-connect/userinfo"
+    url = f"http://{host_ip}:8080/realms/myrealm/protocol/openid-connect/userinfo"
     headers = {
         "Authorization": f"Bearer {token}"}
     response = requests.get(url, headers=headers)
@@ -81,14 +86,12 @@ def get_user_info(token: str):
 
 
 @task_router.get('/')
-def get_tasks(task_service: TaskService = Depends(TaskService),
-              current_user: dict = Depends(callback)) -> list[Task]:
-    print(current_user["realm_access"]["roles"])
-    if "Viewer" in current_user["realm_access"]["roles"]:
+def get_tasks(task_service: TaskService = Depends(TaskService)) -> list[Task]:
+    if "Viewer" == user_role:
         return task_service.get_tasks()
-    elif "Creator" in current_user["realm_access"]["roles"]:
+    elif "Creator" ==user_role:
         return task_service.get_tasks()
-    raise HTTPException(status_code=403, detail="Permission denied")
+    raise HTTPException(status_code=403, detail=f"{user_role}")
 
 
 
