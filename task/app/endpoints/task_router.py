@@ -24,13 +24,14 @@ from jose import JWTError, jwt
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-host_ip="192.168.1.100"
+host_ip="10.192.222.160"
 keycloak_authorization_url = f"http://{host_ip}:8080/realms/myrealm/protocol/openid-connect/auth"
 keycloak_token_url = f"http://{host_ip}:8080/realms/myrealm/protocol/openid-connect/token"
 keycloak_client_id = "myclient"
-keycloak_client_secret = f"7EEuCHQvc8eQ92zTQJvFuWelkS4tpBP1"
+keycloak_client_secret = "7EEuCHQvc8eQ92zTQJvFuWelkS4tpBP1"
 task_router = APIRouter(prefix='/tasks', tags=['Tasks'])
-user_role="Not authorized"
+token="Not authorized"
+
 @task_router.get("/login")
 def login(request: Request):
     # Manually specify redirect_uri and state
@@ -47,21 +48,11 @@ def login(request: Request):
 
 @task_router.get("/callback")
 def callback(request: Request):
-    global user_role
+    global token
     print(request.json())
     code = request.query_params.get("code")
     token = get_token(code)
-    print(token)
-    roles = get_user_info(token)
-    print(roles)
-    if "Viewer" in roles["realm_access"]["roles"]:
-        user_role = "Viewer"
-        print(user_role)
-        return f"Authorized! Your role is:{user_role}"
-    elif "Creator" in roles["realm_access"]["roles"]:
-        user_role = "Creator"
-        return f"Authorized! Your role is: {user_role}"
-    return "Not authorized"
+    return "Authorized"
 
 def get_token(code: str):
     token_url = f"http://{host_ip}:8080/realms/myrealm/protocol/openid-connect/token"
@@ -89,11 +80,15 @@ def get_user_info(token: str):
 
 @task_router.get('/')
 def get_tasks(task_service: TaskService = Depends(TaskService)) -> list[Task]:
-    if "Viewer" == user_role:
+    print(token)
+    if token == "Not authorized":
+        raise HTTPException(status_code=403, detail="Not authorized")
+    roles = get_user_info(token)
+    print(roles)
+    if "Viewer" in roles["realm_access"]["roles"]:
         return task_service.get_tasks()
-    elif "Creator" ==user_role:
+    elif "Creator" in roles["realm_access"]["roles"]:
         return task_service.get_tasks()
-    raise HTTPException(status_code=403, detail=f"{user_role}")
 
 
 
@@ -102,10 +97,13 @@ def create_task(
         task_info: CreateTaskRequest,
         task_service: TaskService = Depends(TaskService)
 ) -> Task:
-    if "Viewer" == user_role:
-        raise HTTPException(status_code=403, detail="Permission denied")
-    elif "Not authorized" ==user_role:
+    print(token)
+    if token == "Not authorized":
         raise HTTPException(status_code=403, detail="Not authorized")
+    roles = get_user_info(token)
+    print(roles)
+    if "Viewer" in roles["realm_access"]["roles"]:
+        raise HTTPException(status_code=403, detail="Permission denied")
     try:
         task = task_service.create_task(task_info.id, task_info.title, task_info.description, task_info.due_date,
                                         task_info.assignee_id)
@@ -118,10 +116,13 @@ def create_task(
 @task_router.post('/{id}/start')
 def start_task(id: UUID, task_service: TaskService = Depends(TaskService),
                ) -> Task:
-    if "Viewer" == user_role:
-        raise HTTPException(status_code=403, detail="Permission denied")
-    elif "Not authorized" == user_role:
+    print(token)
+    if token == "Not authorized":
         raise HTTPException(status_code=403, detail="Not authorized")
+    roles = get_user_info(token)
+    print(roles)
+    if "Viewer" in roles["realm_access"]["roles"]:
+        raise HTTPException(status_code=403, detail="Permission denied")
     try:
         task = task_service.start_task(id)
         return task.dict()
@@ -134,10 +135,13 @@ def start_task(id: UUID, task_service: TaskService = Depends(TaskService),
 @task_router.post('/{id}/complete')
 def complete_task(id: UUID, task_service: TaskService = Depends(TaskService),
                   ) -> Task:
-    if "Viewer" == user_role:
-        raise HTTPException(status_code=403, detail="Permission denied")
-    elif "Not authorized" == user_role:
+    print(token)
+    if token == "Not authorized":
         raise HTTPException(status_code=403, detail="Not authorized")
+    roles = get_user_info(token)
+    print(roles)
+    if "Viewer" in roles["realm_access"]["roles"]:
+        raise HTTPException(status_code=403, detail="Permission denied")
     try:
         task = task_service.complete_task(id)
         return task.dict()
@@ -150,10 +154,13 @@ def complete_task(id: UUID, task_service: TaskService = Depends(TaskService),
 @task_router.post('/{id}/cancel')
 def cancel_task(id: UUID, task_service: TaskService = Depends(TaskService)
                 ) -> Task:
-    if "Viewer" == user_role:
-        raise HTTPException(status_code=403, detail="Permission denied")
-    elif "Not authorized" == user_role:
+    print(token)
+    if token == "Not authorized":
         raise HTTPException(status_code=403, detail="Not authorized")
+    roles = get_user_info(token)
+    print(roles)
+    if "Viewer" in roles["realm_access"]["roles"]:
+        raise HTTPException(status_code=403, detail="Permission denied")
     try:
         task = task_service.cancel_task(id)
         return task.dict()
