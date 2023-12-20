@@ -4,7 +4,6 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 
 import prometheus_client
-
 from app.models.create_task_request import CreateTaskRequest
 from app.services.task_service import TaskService
 from app.models.task import Task
@@ -13,6 +12,26 @@ from app.rabbitmq import process_created_task
 
 from app.rabbitmq import send_assignee_update_message
 from fastapi import Response
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.exporter.jaeger.thrift import JaegerExporter
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
+# Инициализация провайдера трассировки
+tracer_provider = TracerProvider(resource=Resource.create({"service.name": "task-service"}))
+trace.set_tracer_provider(tracer_provider)
+
+# Настройка экспортера Jaeger
+jaeger_exporter = JaegerExporter(
+    agent_host_name="jaeger",
+    agent_port=6831,
+    service_name="task-service",
+)
+
+# Настройка процессора для отправки трассировок
+span_processor = BatchSpanProcessor(jaeger_exporter)
+tracer_provider.add_span_processor(span_processor)
 
 task_router = APIRouter(prefix='/tasks', tags=['Tasks'])
 metrics_router = APIRouter(tags=['Metrics'])
@@ -55,8 +74,9 @@ cancel_task_count_failed = prometheus_client.Counter(
 )
 @task_router.get('/')
 def get_tasks(task_service: TaskService = Depends(TaskService)) -> list[Task]:
-    get_task_count.inc(1)
-    return task_service.get_tasks()
+    with trace.get_tracer(__name__).start_as_current_span("get_tasks") as span:
+        get_task_count.inc(1)
+        return task_service.get_tasks()
 
 @task_router.post('/')
 def create_task(

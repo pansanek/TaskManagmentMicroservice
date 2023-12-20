@@ -6,6 +6,9 @@ from app import rabbitmq
 from app.endpoints.task_router import task_router,metrics_router
 import logging
 from logging_loki import LokiHandler
+
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
 app = FastAPI(title='Task Service')
 
 loki_logs_handler = LokiHandler(
@@ -23,3 +26,4 @@ def startup():
 
 app.include_router(task_router,prefix='/api')
 app.include_router(metrics_router)
+FastAPIInstrumentor.instrument_app(app)
